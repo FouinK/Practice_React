@@ -28,6 +28,15 @@ body {
   padding: 20px;
   background: #eee;
 }
+
+.server_test_join{
+  margin-top: 30px;
+  text-align: center;
+  padding-left: 20px;
+  padding-right: 20px;
+  background : blanchedalmond;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

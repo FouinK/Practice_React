@@ -4,18 +4,49 @@ import logo from './logo.svg';
 import './App.css';
 import React, {useEffect, useState} from 'react';
 
+
+
+const join = {
+  username : "zxc",
+  password : "111"
+}
+
+function Header(props){
+  return <header className='black-nav'>
+    <h3><a onClick={(event)=>{
+      event.preventDefault();
+      props.onChangeMode();
+    }}>윤성현의 프로젝트</a></h3>
+  </header>
+}
+
+function List(props){
+  const lis = [];
+
+  for(let i=0;i<props.postname.length;i++){
+    let p = props.postname[i];
+    lis.push(<div key={p}><h3>{p}</h3>
+    <p>{i}월 발행</p>
+    </div>)
+  }
+  return <div className='list'>{lis}</div>
+    
+}
+
+function ServerJoin(props){
+  return       <div className='server_test_join'>
+    <h3>서버 요청 회원가입 테스트 화면</h3>
+    <button onClick={()=>{axios.post('/api/join',join)
+    .then((response)=>{
+      console.log(response.data);
+    })
+    .catch(function(error){
+      console.log(error);
+    })}}>회원가입 테스트 버튼</button>
+  </div>
+}
+
 function App() {
-
-  let [ postname, postname_change ] = useState(['남자 코트 추천','강남 우동 맛집','파이썬 독학']); 
-  let [like, like_change] = useState(0);
-  let posts = '강남 고기 맛집';
-
-
-  // function change_post(){
-  //     var newArray = [...postname];
-  //     newArray[0] = '여자 코트 추천';
-  //     postname_change(newArray);
-  // }
 
   const login = {
     username : "asd",
@@ -26,18 +57,32 @@ function App() {
     password : "111"
   }
 
-  const join = {
-    username : "zxc",
-    password : "111"
+  const [mode , setMode] = useState(1);
+  let [postname , setPostname] = useState('윤성현');
+  let content = null;
+
+  if(mode === 1){
+    content = <List postname={postname}></List>;
+  } else if(mode === 2){
+    content = <ServerJoin></ServerJoin>;
   }
 
   return (
     <div className="App">
-      <div className='black-nav'>
-        <div>개발 blog</div>
-      </div>
+
+      <Header title='title'onChangeMode={()=>{
+        setMode(1);
+      }}></Header>
+
+      <a onClick={(event)=>{
+        event.preventDefault();
+        setMode(2);
+      }}>login 하러가기</a>
+
+      {content}
+
       {/* <button onClick={ change_post }> 버튼 </button> */}
-      <div className='list'>
+      {/* <div className='list'>
         <h3> { postname[0] }<span onClick={ ()=>{like_change(like+1)} }>👍</span> {like} </h3>
         <p>2월 17일 발행</p>
         <hr/>
@@ -51,12 +96,11 @@ function App() {
         <h3> { postname[2] } </h3>
         <p>2월 19일 발행</p>
         <hr/>
-      </div>
-
+      </div> */}
 
       <div className='server_test'>
         <h3>서버 요청 테스트 화면</h3>
-        <button onClick={()=>{axios.get('http://localhost:8080/api/react_test_login',{params : {username : 'asd',password : '111'}},{ withCredentials: true })
+        <button onClick={()=>{axios.get('/api/react_test_login',{params : {username : 'asd',password : '111'}},{ withCredentials: true })
         .then((response)=>{
           console.log(response.data);
         })
@@ -65,16 +109,8 @@ function App() {
         })}}>서버 요청 테스트 버튼</button>
       </div>
 
-      <div className='server_test_join'>
-        <h3>서버 요청 회원가입 테스트 화면</h3>
-        <button onClick={()=>{axios.post('/api/join',join)
-        .then((response)=>{
-          console.log(response.data);
-        })
-        .catch(function(error){
-          console.log(error);
-        })}}>회원가입 테스트 버튼</button>
-      </div>
+
+
         
         
       <div className='server_test_login'>
@@ -90,7 +126,7 @@ function App() {
       
       <div className='cookie_test'>
         <h3>서버 쿠키 테스트 화면</h3>
-        <button onClick={()=>{axios.get('http://localhost:8080/api/select_cookie',{ withCredentials: true })
+        <button onClick={()=>{axios.get('/api/select_cookie',{ withCredentials: true })
         .then((response)=>{
           console.log(response.data);
         })
