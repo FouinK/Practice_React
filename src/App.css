@@ -37,6 +37,14 @@ body {
   background : blanchedalmond;
 }
 
+.server_test_login{
+  margin-top: 30px;
+  text-align: center;
+  padding-left: 20px;
+  padding-right: 20px;
+  background : #eee;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
