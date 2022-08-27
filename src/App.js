@@ -13,6 +13,7 @@ import Mypage from "./modules/mypage.js"
 import Join from "./modules/join.js"
 import Login from "./modules/login.js"
 
+//로그인 상태 처리 세션스토리지
 let sessionStorage = window.sessionStorage;
 
 /**
@@ -25,13 +26,12 @@ function App() {
   const [mode , setMode] = useState(1);
   let [postname , setPostname] = useState('윤성현');
   const [userInfo, setUserInfo] = useState([
-    {username : " ", role : " "}
+    {username : " ", role : " ", nickname : " "}
   ])
 
   let content = null;
   let userinfo = null;
   let mypage = null;
-  let updatedUserInfo = null;
 
   let joinInfo = <Join join="join" onChangeMode={()=>{
     setMode(2);
@@ -41,21 +41,30 @@ function App() {
   }}></Login>
 
   if(mode === 1){
+
     content = <List postname={postname}></List>;
   } else if(mode === 2){
-    content = <ServerJoin></ServerJoin>;
+
+    content = <ServerJoin props="props" onChangeMode={()=>{
+      setMode(1);
+    }}></ServerJoin>;
   } else if(mode === 3){
+
     content = <ServerLogin serverlogin="serverlogin" onChangeMode={()=>{
       setMode(1);
     }}></ServerLogin>
   } else if(mode === 4){
+
     content = <ServerRequsetTest></ServerRequsetTest>
   } else if (mode === 5){
+
     content = <CookieTest></CookieTest>
   } else if(mode === 6){
+
     content = <Modal></Modal>
   } else if(mode === 7){
-    content = <Mypage username={userInfo.username} role={userInfo.role}></Mypage>;
+    console.log(userInfo);
+    content = <Mypage userinfo={userInfo}></Mypage>;    //마이페이지 버튼 누르면 최종적으로 콘덴츠가 바뀜
   }
 
   if(sessionStorage.getItem("username") === null){
@@ -75,35 +84,26 @@ function App() {
     joinInfo = null;
     logInfo = null;
 
-    mypage = <MypageButton username={userInfo.username} role={userInfo.role} onChangeMode={(username,role)=>{
-      updatedUserInfo = {username:username, role:role};
+    mypage = <MypageButton onChangeMode={(userinfo)=>{
+      const updatedUserInfo = {username:userinfo.username, role:userinfo.role, nickname:userinfo.nickname};
+      console.log(updatedUserInfo);
       setUserInfo(updatedUserInfo);
-      forceUpdate();
       setMode(7);
-    }}></MypageButton>
+    }}></MypageButton>    //마이페이지 요청 했을 때
 
   }
 
-  // else {
-  //   <Userinfo current_username={sessionStorage.getItem("username")} onChangeMode={()=>{
-  //     setMode(1);
-  //   }}></Userinfo>
-  // }
-
   return (
     <div className="App">
-
       <Header title='윤성현의 개인 프로젝트'onChangeMode={()=>{
         setMode(1);
         console.log("헤더 컴포넌트 app부분 확인");
       }}></Header>
 
-
       {mypage}
 
       {userinfo}
 
-      
       {joinInfo}
 
       {logInfo}

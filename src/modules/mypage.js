@@ -6,11 +6,13 @@ import React,{Component} from "react";
  * @returns 
  */
  function Mypage(props){
-    console.log(props);
+    console.log(props.userinfo);
+    
     return <div>
       <ol>
-        <p>ID : {props.username}</p>
-        <p>ROLE : {props.role}</p>
+        <p>ID : {props.userinfo.username}</p>
+        <p>ROLE : {props.userinfo.role}</p>
+        <p>NICKNAME : {props.userinfo.nickname}</p>
       </ol>
     </div>
   }

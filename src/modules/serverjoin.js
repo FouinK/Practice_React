@@ -10,7 +10,8 @@ import axios from 'axios';
 
     let join = {
       username : null,
-      password : null
+      password : null,
+      nickname : null
     }
   
     return <serverjoin className='server_test_join'>
@@ -21,12 +22,14 @@ import axios from 'axios';
   
         join.username = event.target._username.value; 
         join.password = event.target._password.value;
-  
+        join.nickname = event.target._nickname.value;
+
         console.log(join);
   
         axios.post('/api/join',join)
       .then((response)=>{
         console.log(response.data);
+        props.onChangeMode();
       })
       .catch(function(error){
         console.log(error);
@@ -34,6 +37,7 @@ import axios from 'axios';
       }}>
       <p><input id="_username" name="_username" placeholder='ID' ></input></p>
       <p><input id="_password" name="_password" placeholder='PW'></input></p>
+      <p><input id="_nickname" name="_nickname" placeholder='NICKNAME'></input></p>
       <p><input type="submit" value="회원가입 테스트 버튼"></input></p>
       </form>
     </serverjoin>

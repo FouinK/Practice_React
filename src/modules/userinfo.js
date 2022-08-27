@@ -14,11 +14,9 @@ import axios from 'axios';
       <form onSubmit={event=>{
         event.preventDefault();
         axios.post('/api/logout')
-      .then((response)=>{
+      .then((res)=>{
         sessionStorage.removeItem("username")
         props.onChangeMode();
-        // console.log(props.onChangeMode());
-        console.log(response.data);
       })
       .catch(function(error){
         console.log(error);
