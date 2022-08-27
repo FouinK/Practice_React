@@ -17,7 +17,7 @@ function Header(props){
     <div><a onClick={(event)=>{
       event.preventDefault();
       props.onChangeMode();
-    }}>윤성현의 프로젝트</a></div>
+    }}>{props.title}</a></div>
   </header>
 }
 
@@ -158,16 +158,42 @@ function CookieTest(){
 function Userinfo(props){
   return <userinfo>
     <h3>{props.current_username}님 반갑습니다 !</h3>
-      <button type="button" value = "로그아웃" onClick={()=>{
-          axios.post('/api/logout').then((res)=>{
-            console.log(res.data.logout);
-            sessionStorage.clear();
-            // debugger;
-            props.onChangeMode();
-          })
-      }}>로그아웃</button>
-      <br/>
+
+    <form onSubmit={event=>{
+      event.preventDefault();
+      axios.post('/api/logout')
+    .then((response)=>{
+      sessionStorage.removeItem("username")
+      props.onChangeMode();
+      // console.log(props.onChangeMode());
+      console.log(response.data);
+    })
+    .catch(function(error){
+      console.log(error);
+    })
+    }}>
+    <p><input type="submit" value="로그아웃"></input></p>
+    </form>
   </userinfo>
+}
+
+/**
+ * 마이페이지 버튼
+ */
+function MypageButton(props){
+  const [userinfo_username,setUserinfo_Username] = useState(" ");
+  const [userinfo_role,setUserinfo_role] = useState(" ");
+  return <form onSubmit={event=>{
+    event.preventDefault();
+    axios.get('api/mypage').then((res)=>{
+      console.log(res.data);
+      setUserinfo_Username(res.data.username);
+      setUserinfo_role(res.data.role);
+      props.onChangeMode(userinfo_username,userinfo_role);
+    })
+  }}>
+    <input type="submit" value="마이페이지 가기"></input>
+  </form>
 }
 
 /**
@@ -176,13 +202,13 @@ function Userinfo(props){
  * @returns 
  */
 function Join(props){
-  return      <join> 
+  return      <div> 
     <a href='/join' onClick={(event)=>{
     event.preventDefault();
     props.onChangeMode();
   }}>회원가입 하러가기</a>
   <br/>
-  </join>
+  </div>
 }
 
 /**
@@ -191,13 +217,27 @@ function Join(props){
  * @returns 
  */
 function Login(props){
-  return      <login> 
+  return      <div> 
     <a href='/login' onClick={(event)=>{
     event.preventDefault();
     props.onChangeMode();
   }}>로그인 하러가기</a>
   <br/>
-  </login>
+  </div>
+}
+
+/**
+ * 마이페이지로 이동했을 때 나오는 컴포넌트
+ * @param {} props 
+ * @returns 
+ */
+function Mypage(props){
+  return <div>
+    <ol>
+      <p>ID : {props.username}</p>
+      <p>ROLE : {props.role}</p>
+    </ol>
+  </div>
 }
 
 /**
@@ -206,10 +246,15 @@ function Login(props){
  */
 function App() {
 
+  console.log(sessionStorage.getItem("username"))
   const [mode , setMode] = useState(1);
   let [postname , setPostname] = useState('윤성현');
+  const [userInfo, setUserInfo] = useState([
+    {username : " ", role : " "}
+  ])
   let content = null;
   let userinfo = null;
+  let mypage = null;
   let joinInfo = <Join join="join" onChangeMode={()=>{
     setMode(2);
   }}></Join>;
@@ -217,8 +262,38 @@ function App() {
     setMode(3);
   }}></Login>
 
+
+
+  if(sessionStorage.getItem("username") === null){
+
+    userinfo = null;
+    mypage = null;
+    console.log("겟아이템 username널일 때")
+
+  }else if(sessionStorage.getItem("username")!==null){
+
+    userinfo = <Userinfo current_username={sessionStorage.getItem("username")} onChangeMode={()=>{
+      setMode(1);
+
+      console.log("로그아웃 다음 랜더링에서 출력 확인");
+    }}></Userinfo>
+
+    joinInfo = null;
+    logInfo = null;
+
+    mypage = <MypageButton title="props" onChangeMode={(username,role)=>{
+      const updatedUserInfo = {username:username, role:role};
+      setUserInfo(updatedUserInfo);
+      setMode(7);
+    }}></MypageButton>
+
+  }
+
+  console.log("모드 값 확인 "+mode);
+
   if(mode === 1){
     content = <List postname={postname}></List>;
+    console.log("mode = 1 작동 학인");
   } else if(mode === 2){
     content = <ServerJoin></ServerJoin>;
   } else if(mode === 3){
@@ -231,15 +306,10 @@ function App() {
     content = <CookieTest></CookieTest>
   } else if(mode === 6){
     content = <Modal></Modal>
-  } 
-
-  if(sessionStorage.getItem("username") != null){
-    userinfo = <Userinfo current_username={sessionStorage.getItem("username")} onChangeMode={()=>{
-      setMode(1);
-    }}></Userinfo>
-    joinInfo = null;
-    logInfo = null;
+  } else if(mode === 7){
+    content = <Mypage username={userInfo.username} role={userInfo.role}></Mypage>;
   }
+
 
   // else {
   //   <Userinfo current_username={sessionStorage.getItem("username")} onChangeMode={()=>{
@@ -250,17 +320,20 @@ function App() {
   return (
     <div className="App">
 
-      <Header title='title'onChangeMode={()=>{
+      <Header title='윤성현의 개인 프로젝트'onChangeMode={()=>{
         setMode(1);
+        console.log("헤더 컴포넌트 app부분 확인");
       }}></Header>
 
+
+      {mypage}
+
       {userinfo}
+
       
       {joinInfo}
 
       {logInfo}
-
-
 
       <a href='/login' onClick={(event)=>{
         event.preventDefault();
