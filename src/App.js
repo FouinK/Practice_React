@@ -12,6 +12,7 @@ import CookieTest from "./modules/cookietest.js"
 import Mypage from "./modules/mypage.js"
 import Join from "./modules/join.js"
 import Login from "./modules/login.js"
+import Boardlist from "./modules/boardlist.js"
 
 //로그인 상태 처리 세션스토리지
 let sessionStorage = window.sessionStorage;
@@ -36,7 +37,7 @@ function App() {
   let joinInfo = <Join join="join" onChangeMode={()=>{
     setMode(2);
   }}></Join>;
-  let logInfo = <Login login="login" onChangeMode={()=>{
+  let logInfo = <Login login="login" onChantitgeMode={()=>{
     setMode(3);
   }}></Login>
 
@@ -61,17 +62,16 @@ function App() {
     content = <CookieTest></CookieTest>
   } else if(mode === 6){
 
-    content = <Modal></Modal>
+    content = <Boardlist></Boardlist>  
   } else if(mode === 7){
     console.log(userInfo);
     content = <Mypage userinfo={userInfo}></Mypage>;    //마이페이지 버튼 누르면 최종적으로 콘덴츠가 바뀜
-  }
+  } 
 
   if(sessionStorage.getItem("username") === null){
 
     userinfo = null;
     mypage = null;
-    console.log("겟아이템 username널일 때")
 
   }else if(sessionStorage.getItem("username")!==null){
 
@@ -95,7 +95,7 @@ function App() {
 
   return (
     <div className="App">
-      <Header title='윤성현의 개인 프로젝트'onChangeMode={()=>{
+      <Header title='리액트 기본적인 기능 연습'onChangeMode={()=>{
         setMode(1);
         console.log("헤더 컴포넌트 app부분 확인");
       }}></Header>
@@ -107,7 +107,7 @@ function App() {
       {joinInfo}
 
       {logInfo}
-
+      
       <a href='/login' onClick={(event)=>{
         event.preventDefault();
         setMode(4);
@@ -125,6 +125,8 @@ function App() {
         setMode(6);
       }}>게시판 내용 가기</a>
       <hr/>
+      
+
 
       {content}
       
@@ -132,13 +134,13 @@ function App() {
   );
 }
  
-function Modal(){
-  return (
-    <div className='modal'>
-        <h2>제목</h2>
-        <p>날짜</p>
-        <p>상세 내용</p>
-      </div>
-  )
-}
+// function Modal(){
+//   return (
+//     <div className='modal'>
+//         <h2>제목</h2>
+//         <p>날짜</p>
+//         <p>상세 내용</p>
+//       </div>
+//   )
+// }
 export default App;
