@@ -37,7 +37,7 @@ function App() {
   let joinInfo = <Join join="join" onChangeMode={()=>{
     setMode(2);
   }}></Join>;
-  let logInfo = <Login login="login" onChantitgeMode={()=>{
+  let logInfo = <Login login="login" onChangeMode={()=>{
     setMode(3);
   }}></Login>
 
@@ -107,6 +107,7 @@ function App() {
       {joinInfo}
 
       {logInfo}
+
       
       <a href='/login' onClick={(event)=>{
         event.preventDefault();
